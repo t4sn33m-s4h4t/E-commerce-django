@@ -1,0 +1,62 @@
+{% extends "base/base.html" %}
+
+
+{% block start %}
+
+  <div class="container">
+      {% include "base/alert.html" %}
+      <h1>User Profile</h1>
+      <div class="row">
+          <div class="col-md-6">
+              <form  method="post">
+            {% csrf_token %}
+          <div class="mb-3">
+            <label for="first-name" class="form-label">First Name</label>
+            <input type="text" class="form-control" id="first-name" name="first_name" value="{{ user.first_name }}">
+          </div>
+          <div class="mb-3">
+            <label for="last-name" class="form-label">Last Name</label>
+            <input type="text" class="form-control" id="last-name" name="last_name" value="{{ user.last_name }}">
+          </div>
+          <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}">
+          </div>
+          <button type="submit" class="btn btn-primary">Update Profile</button>
+        </form>
+      </div>
+      <div class="col-md-6">
+        <div class="profile-image-reupload">
+            <label for="profile-image">Profile Image</label>
+            <input type="file" id="profile-image">
+            <button type="submit">Upload Image</button>
+          </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    var profileImageReupload = document.querySelector('.profile-image-reupload');
+var profileImageInput = document.querySelector('#profile-image');
+
+profileImageInput.addEventListener('change', function() {
+  var file = this.files[0];
+  var formData = new FormData();
+  formData.append('profile_image', file);
+
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/accounts/update-profile-image');
+  xhr.send(formData);
+
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      profileImageReupload.style.display = 'none';
+      profileImageInput.value = '';
+    } else {
+      console.log(xhr.responseText);
+    }
+  };
+});
+
+  </script>
+
+{% endblock %}
